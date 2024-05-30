@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">FPS Switcher</string>
-    <string name="tile_label">刷新率</string>
-    <string name="alert_message">功能无法使用，请确认Shizuku是否已安装并启用。</string>
-    <string name="alert_positive">去下载</string>
-    <string name="alert_negative">取消</string>
+    <string name="tile_label">FPS Switcher</string>
+    <string name="alert_message">Shizuku is not available or the permission has not been granted. Please check for Shizuku inapp settings</string>
+    <string name="alert_positive">Download</string>
+    <string name="alert_negative">Cancel</string>
 </resources>
