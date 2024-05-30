@@ -6,4 +6,5 @@ package com.alphaboom.fpsswitcher;
 interface IFpsInterface {
     void setFps(int fps);
     int getFps();
+    int[] getSupportFps();
 }

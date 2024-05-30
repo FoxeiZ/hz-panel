@@ -3,21 +3,19 @@ package com.alphaboom.fpsswitcher
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
+import android.graphics.drawable.Icon
 import android.net.Uri
 import android.os.IBinder
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
+import android.util.Log
 import rikka.shizuku.Shizuku
 import rikka.shizuku.Shizuku.UserServiceArgs
-import java.lang.NullPointerException
 
 
-private const val FPS60 = 60
-private const val FPS120 = 120
 private const val APPLICATION_ID = "com.alphaboom.fpsswitcher"
 private const val VERSION = 1
 private const val INIT_REQUEST = 1001
@@ -26,6 +24,9 @@ private const val SHIZUKU_PACKAGE = "moe.shizuku.privileged.api"
 class FpsSwitcherTileService : TileService() {
     private var currentFps = -1
         set(value) {
+            if (value == field) {
+                return
+            }
             field = value
             updateTile()
         }
@@ -125,7 +126,6 @@ class FpsSwitcherTileService : TileService() {
         } else if (request) {
             Shizuku.requestPermission(INIT_REQUEST)
         }
-
     }
 
     private fun toggleState() {
@@ -133,13 +133,13 @@ class FpsSwitcherTileService : TileService() {
             initState(true)
         } else {
             withInterface {
-                val targetFps = if (currentFps == FPS120) {
-                    FPS60
+                val nextFps = it.supportFps.indexOf(currentFps) + 1
+                currentFps = if (nextFps >= it.supportFps.size) {
+                    it.supportFps[0]
                 } else {
-                    FPS120
+                    it.supportFps[nextFps]
                 }
-                currentFps = targetFps
-                it.fps = targetFps
+                it.fps = currentFps
             }
         }
     }
@@ -154,12 +154,15 @@ class FpsSwitcherTileService : TileService() {
     }
 
     private fun updateTile() {
-        val state = if (currentFps == FPS120) {
+        val state = if (currentFps != 60) {
             Tile.STATE_ACTIVE
         } else {
             Tile.STATE_INACTIVE
         }
+
+        qsTile.icon
         qsTile.state = state
+        qsTile.label = currentFps.toString() + "Hz"
         qsTile.updateTile()
     }
 }
