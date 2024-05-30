@@ -1,7 +1,5 @@
 package com.alphaboom.fpsswitcher
 
-import android.util.Log
-
 class FpsService :IFpsInterface.Stub(){
     override fun setFps(fps: Int) {
         Runtime.getRuntime().exec("settings put secure miui_refresh_rate $fps")
